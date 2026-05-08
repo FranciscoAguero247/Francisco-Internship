@@ -1,13 +1,35 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import EthImage from "../images/ethereum.svg";
-import { Link } from "react-router-dom";
-import AuthorImage from "../images/author_thumbnail.jpg";
-import nftImage from "../images/nftImage.jpg";
+import { Link, useParams } from "react-router-dom";
+import axios from "axios";
 
 const ItemDetails = () => {
+  const [item, setItem] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const { nftId }  = useParams();
+
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+    
+    axios 
+      .get(`https://us-central1-nft-cloud-functions.cloudfunctions.net/itemDetails?nftId=${nftId}`)
+      .then((response) => {
+        setItem(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
+  }, [nftId]);
+
+  if(loading){
+    return <div className="text-center mt-90">Loading...</div>;
+  }
+
+  if(!item){
+    return <div className="text-center mt-90">Item not found</div>; 
+  }
 
   return (
     <div id="wrapper">
@@ -18,14 +40,14 @@ const ItemDetails = () => {
             <div className="row">
               <div className="col-md-6 text-center">
                 <img
-                  src={nftImage}
+                  src={item.nftImage}
                   className="img-fluid img-rounded mb-sm-30 nft-image"
                   alt=""
                 />
               </div>
               <div className="col-md-6">
                 <div className="item_info">
-                  <h2>Rainbow Style #194</h2>
+                  <h2>{item.title} #194</h2>
 
                   <div className="item_info_counts">
                     <div className="item_info_views">
@@ -34,7 +56,7 @@ const ItemDetails = () => {
                     </div>
                     <div className="item_info_like">
                       <i className="fa fa-heart"></i>
-                      74
+                      {item.likes}
                     </div>
                   </div>
                   <p>
@@ -47,8 +69,8 @@ const ItemDetails = () => {
                       <h6>Owner</h6>
                       <div className="item_author">
                         <div className="author_list_pp">
-                          <Link to="/author">
-                            <img className="lazy" src={AuthorImage} alt="" />
+                          <Link to={`/author/${item.authorId}`}>
+                            <img className="lazy" src={item.authorImage} alt="" />
                             <i className="fa fa-check"></i>
                           </Link>
                         </div>
@@ -65,7 +87,7 @@ const ItemDetails = () => {
                       <div className="item_author">
                         <div className="author_list_pp">
                           <Link to="/author">
-                            <img className="lazy" src={AuthorImage} alt="" />
+                            <img className="lazy" src={item.authorImage} alt="" />
                             <i className="fa fa-check"></i>
                           </Link>
                         </div>
