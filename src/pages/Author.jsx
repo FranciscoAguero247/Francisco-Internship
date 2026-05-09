@@ -3,8 +3,40 @@ import AuthorBanner from "../images/author_banner.jpg";
 import AuthorItems from "../components/author/AuthorItems";
 import { Link } from "react-router-dom";
 import AuthorImage from "../images/author_thumbnail.jpg";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 const Author = () => {
+
+  const [author, setAuthor] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const { authorId }  = useParams();
+
+  useEffect(() => {
+    window.scrollTo(0, 0); 
+    console.log("Current authorId from URL:", authorId);
+
+    axios
+      .get(`https://us-central1-nft-cloud-functions.cloudfunctions.net/newItems?authorId=${authorId}`)
+      .then((response) => {
+        setAuthor(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
+  }, [authorId]);
+
+  if(loading){
+    return <div className="text-center mt-90">Loading...</div>;
+  }
+
+  if(!author){
+    return <div className="text-center mt-90">Author not found</div>; 
+  }
+
   return (
     <div id="wrapper">
       <div className="no-bottom no-top" id="content">
@@ -14,7 +46,6 @@ const Author = () => {
           id="profile_banner"
           aria-label="section"
           className="text-light"
-          data-bgimage="url(images/author_banner.jpg) top"
           style={{ background: `url(${AuthorBanner}) top` }}
         ></section>
 
@@ -25,7 +56,7 @@ const Author = () => {
                 <div className="d_profile de-flex">
                   <div className="de-flex-col">
                     <div className="profile_avatar">
-                      <img src={AuthorImage} alt="" />
+                      <img src={author.authorImage} alt="" />
 
                       <i className="fa fa-check"></i>
                       <div className="profile_name">
