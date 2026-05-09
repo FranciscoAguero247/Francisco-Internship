@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Slider from "react-slick";
+// import Skeleton from "../UI/Skeleton.jsx";
 
  const CountDownTimer = ({expiryDate}) => {
       const[timeLeft, setTimeLeft] = useState("");
@@ -49,6 +53,28 @@ const NewItems = () => {
         });
     }, []);
 
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 4,
+    slidesToScroll: 1,
+    responsive: [
+      {
+        breakpoint: 1200,
+        settings: { slidesToShow: 3 }
+      },
+      {
+        breakpoint: 992, 
+        settings: { slidesToShow: 2 }
+      },
+      {
+        breakpoint: 768, 
+        settings: { slidesToShow: 1 }
+      }
+    ]
+  };
+
   return (
     <section id="section-items" className="no-bottom">
       <div className="container">
@@ -59,11 +85,9 @@ const NewItems = () => {
               <div className="small-border bg-color-2"></div>
             </div>
           </div>
-
+          <Slider {...settings}>
           {newItems.map((data, index) =>(
-
-
-            <div className="col-lg-3 col-md-6 col-sm-6 col-xs-12" key={index}>
+            <div className="px-2" key={index}>
               <div className="nft__item">
                 <div className="author_list_pp">
                   <Link
@@ -118,11 +142,8 @@ const NewItems = () => {
                 </div>
               </div>
             </div>
-
-
           ))}
-
-
+          </Slider>
         </div>
       </div>
     </section>
