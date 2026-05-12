@@ -6,6 +6,7 @@ import AuthorImage from "../images/author_thumbnail.jpg";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import Skeleton from "../components/UI/Skeleton";
 
 const Author = () => {
 
@@ -15,7 +16,6 @@ const Author = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0); 
-    console.log("Current authorId from URL:", authorId);
 
     axios
       .get(`https://us-central1-nft-cloud-functions.cloudfunctions.net/newItems?authorId=${authorId}`)
@@ -29,11 +29,7 @@ const Author = () => {
       });
   }, [authorId]);
 
-  if(loading){
-    return <div className="text-center mt-90">Loading...</div>;
-  }
-
-  if(!author){
+  if(!author && !loading){
     return <div className="text-center mt-90">Author not found</div>; 
   }
 
@@ -56,21 +52,26 @@ const Author = () => {
                 <div className="d_profile de-flex">
                   <div className="de-flex-col">
                     <div className="profile_avatar">
-                      <img src={author.authorImage} alt="" />
-
-                      <i className="fa fa-check"></i>
-                      <div className="profile_name">
-                        <h4>
-                          Monica Lucas
-                          <span className="profile_username">@monicaaaa</span>
-                          <span id="wallet" className="profile_wallet">
-                            UDHUHWudhwd78wdt7edb32uidbwyuidhg7wUHIFUHWewiqdj87dy7
-                          </span>
-                          <button id="btn_copy" title="Copy Text">
-                            Copy
-                          </button>
-                        </h4>
-                      </div>
+                      {loading ? (
+                      <Skeleton width={100} height={100} borderRadius={50} />
+                      ) : (
+                        <>
+                        <img src={author?.authorImage} alt="" />
+                        <i className="fa fa-check"></i>
+                        <div className="profile_name">
+                          <h4>
+                            Monica Lucas
+                            <span className="profile_username">@monicaaaa</span>
+                            <span id="wallet" className="profile_wallet">
+                              UDHUHWudhwd78wdt7edb32uidbwyuidhg7wUHIFUHWewiqdj87dy7
+                            </span>  
+                            <button id="btn_copy" title="Copy Text">
+                              Copy
+                            </button>
+                          </h4>
+                        </div>
+                        </>
+                      )}
                     </div>
                   </div>
                   <div className="profile_follow de-flex">

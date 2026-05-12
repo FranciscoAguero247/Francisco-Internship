@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-// import Skeleton from "../UI/Skeleton.jsx";
+import Skeleton from "../UI/Skeleton.jsx";
 
  const CountDownTimer = ({expiryDate}) => {
       const[timeLeft, setTimeLeft] = useState("");
@@ -38,18 +38,18 @@ import Slider from "react-slick";
 const NewItems = () => {
   
     const [newItems, setNewItems] = useState([]);
-    // const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(true);
     
     useEffect(() => {
       axios
         .get("https://us-central1-nft-cloud-functions.cloudfunctions.net/newItems")
         .then((response) => {
           setNewItems(response.data);
-          // setLoading(false);
+          setLoading(false);
       })
         .catch((error) => {
           console.log(error);
-          // setLoading(false);
+          setLoading(false);
         });
     }, []);
 
@@ -85,6 +85,27 @@ const NewItems = () => {
               <div className="small-border bg-color-2"></div>
             </div>
           </div>
+          {loading ? (
+            <div className="d-flex">
+              {new Array(4).fill(0).map((_, index) => (
+                <div className="col-lg-3 col-md-6 col-sm-6 col-sm-12" key={index}>
+                  <div className="nft_coll">
+                    <div className="nft_wrap">
+                      <Skeleton width={100} height={200} />
+                    </div>
+                    <div className="nft_coll_pp">
+                      <Skeleton width={50} height={50} borderRadius={50} />
+                    </div>
+                    <div className="nft_coll_info">
+                      <Skeleton width={100} height={20} />
+                      <br />
+                      <Skeleton width={60} height={15} />
+                      </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
           <Slider {...settings}>
           {newItems.map((data, index) =>(
             <div className="px-2" key={index}>
@@ -144,6 +165,7 @@ const NewItems = () => {
             </div>
           ))}
           </Slider>
+          )}
         </div>
       </div>
     </section>
