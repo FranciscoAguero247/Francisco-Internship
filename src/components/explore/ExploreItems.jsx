@@ -1,10 +1,7 @@
 import React, { useState, useEffect }from "react";
-import { Link } from "react-router-dom";
-import AuthorImage from "../../images/author_thumbnail.jpg";
-import nftImage from "../../images/nftImage.jpg";
 import axios from "axios";
-import CountDownTimer from "../UI/CountDownTimer.jsx";
 import NFTCard from "../UI/NFTCard.jsx";
+import Skeleton from "../UI/Skeleton.jsx";
 
 
 const ExploreItems = () => {
@@ -42,21 +39,31 @@ const ExploreItems = () => {
           <option value="likes_high_to_low">Most liked</option>
         </select>
       </div>
-
-      {exploreItems.slice(0, visibleCount).map((exploreItem, index) => (
-        <NFTCard
-          key={index} 
-          data={exploreItem} 
-          className="col-lg-3 col-md-6 col-sm-6 col-sm-12" 
-         />
-      ))}
-      {visibleCount < exploreItems.length && (
+      {loading ?(
+        new Array(8).fill(0).map((_, index) => (
+          <div className="col-lg-3 col-md-6 col-sm-6 col-sm-12" key={index}>
+            <Skeleton width={300} height={400} />
+          </div>
+        ))
+      ) : (
+        <>
+          {exploreItems.slice(0, visibleCount).map((exploreItem, index) => (
+            <NFTCard
+              key={index} 
+              data={exploreItem} 
+              className="col-lg-3 col-md-6 col-sm-6 col-sm-12" 
+            />
+          ))}
+        </>
+      )}
+      {!loading && visibleCount < exploreItems.length && (
       <div className="col-md-12 text-center">
         <button onClick={loadMore} id="loadmore" className="btn-main lead">
           Load more
         </button>
       </div>
       )}
+
     </>
   );
 };
