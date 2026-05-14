@@ -11,6 +11,8 @@ const ExploreItems = () => {
 
   const [exploreItems, setExploreItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [visibleCount, setVisibleCount] = useState(8);
+
 
   useEffect(() => { 
     
@@ -26,6 +28,10 @@ const ExploreItems = () => {
       });
       }, []);
 
+  const loadMore = () => {
+    setVisibleCount((visibleCount) => visibleCount + 4);
+  };
+
   return (
     <>
       <div>
@@ -37,15 +43,20 @@ const ExploreItems = () => {
         </select>
       </div>
 
-      {exploreItems.map((exploreItem, index) => (
-        <NFTCard key={index} data={exploreItem} className="col-lg-3 col-md-6 col-sm-6 col-sm-12" />
+      {exploreItems.slice(0, visibleCount).map((exploreItem, index) => (
+        <NFTCard
+          key={index} 
+          data={exploreItem} 
+          className="col-lg-3 col-md-6 col-sm-6 col-sm-12" 
+         />
       ))}
-
+      {visibleCount < exploreItems.length && (
       <div className="col-md-12 text-center">
-        <Link to="" id="loadmore" className="btn-main lead">
+        <button onClick={loadMore} id="loadmore" className="btn-main lead">
           Load more
-        </Link>
+        </button>
       </div>
+      )}
     </>
   );
 };
