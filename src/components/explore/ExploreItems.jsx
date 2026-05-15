@@ -1,78 +1,91 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import AuthorImage from "../../images/author_thumbnail.jpg";
-import nftImage from "../../images/nftImage.jpg";
+import React, { useState, useEffect }from "react";
+import axios from "axios";
+import NFTCard from "../UI/NFTCard.jsx";
+import Skeleton from "../UI/Skeleton.jsx";
+
 
 const ExploreItems = () => {
+
+  const [exploreItems, setExploreItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [visibleCount, setVisibleCount] = useState(8);
+
+
+  useEffect(() => { 
+    
+    axios
+      .get("https://us-central1-nft-cloud-functions.cloudfunctions.net/explore")
+      .then((response) => {
+        setExploreItems(response.data);
+        setLoading(false);
+        })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
+      }, []);
+
+  const loadMore = () => {
+    setVisibleCount((visibleCount) => visibleCount + 4);
+  };
+
+  const filterItems = (event) => {
+    const selectedValue = event.target.value;
+    setLoading(true);
+
+    const url = selectedValue
+    ? `https://us-central1-nft-cloud-functions.cloudfunctions.net/explore?filter=${selectedValue}`
+    : "https://us-central1-nft-cloud-functions.cloudfunctions.net/explore";
+
+    axios
+      .get(url)
+      .then((response) => {
+        setExploreItems(response.data);
+        setVisibleCount(8);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
+  };
+
+
   return (
     <>
       <div>
-        <select id="filter-items" defaultValue="">
+        <select id="filter-items" defaultValue="" onChange={filterItems}>
           <option value="">Default</option>
           <option value="price_low_to_high">Price, Low to High</option>
           <option value="price_high_to_low">Price, High to Low</option>
           <option value="likes_high_to_low">Most liked</option>
         </select>
       </div>
-      {new Array(8).fill(0).map((_, index) => (
-        <div
-          key={index}
-          className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12"
-          style={{ display: "block", backgroundSize: "cover" }}
-        >
-          <div className="nft__item">
-            <div className="author_list_pp">
-              <Link
-                to="/author"
-                data-bs-toggle="tooltip"
-                data-bs-placement="top"
-              >
-                <img className="lazy" src={AuthorImage} alt="" />
-                <i className="fa fa-check"></i>
-              </Link>
-            </div>
-            <div className="de_countdown">5h 30m 32s</div>
-
-            <div className="nft__item_wrap">
-              <div className="nft__item_extra">
-                <div className="nft__item_buttons">
-                  <button>Buy Now</button>
-                  <div className="nft__item_share">
-                    <h4>Share</h4>
-                    <a href="" target="_blank" rel="noreferrer">
-                      <i className="fa fa-facebook fa-lg"></i>
-                    </a>
-                    <a href="" target="_blank" rel="noreferrer">
-                      <i className="fa fa-twitter fa-lg"></i>
-                    </a>
-                    <a href="">
-                      <i className="fa fa-envelope fa-lg"></i>
-                    </a>
-                  </div>
-                </div>
-              </div>
-              <Link to="/item-details">
-                <img src={nftImage} className="lazy nft__item_preview" alt="" />
-              </Link>
-            </div>
-            <div className="nft__item_info">
-              <Link to="/item-details">
-                <h4>Pinky Ocean</h4>
-              </Link>
-              <div className="nft__item_price">1.74 ETH</div>
-              <div className="nft__item_like">
-                <i className="fa fa-heart"></i>
-                <span>69</span>
-              </div>
-            </div>
+      {loading ?(
+        new Array(8).fill(0).map((_, index) => (
+          <div className="col-lg-3 col-md-6 col-sm-6 col-sm-12" key={index}>
+            <Skeleton width={300} height={400} />
           </div>
-        </div>
-      ))}
+        ))
+      ) : (
+        <>
+          {exploreItems.slice(0, visibleCount).map((exploreItem, index) => (
+            <NFTCard
+              key={exploreItem.id || index} 
+              data={exploreItem} 
+              className="col-lg-3 col-md-6 col-sm-6 col-sm-12" 
+            />
+          ))}
+        </>
+      )}
+      {!loading && visibleCount < exploreItems.length && (
       <div className="col-md-12 text-center">
-        <Link to="" id="loadmore" className="btn-main lead">
+        <button onClick={loadMore} id="loadmore" className="btn-main lead">
           Load more
-        </Link>
+        </button>
       </div>
+      )}
+
     </>
   );
 };
