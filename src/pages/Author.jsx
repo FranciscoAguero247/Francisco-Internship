@@ -18,14 +18,14 @@ const Author = () => {
     window.scrollTo(0, 0); 
 
     axios
-      .get(`https://us-central1-nft-cloud-functions.cloudfunctions.net/newItems?authorId=${authorId}`)
+      .get(`https://us-central1-nft-cloud-functions.cloudfunctions.net/authors?author=${authorId}`)
       .then((response) => {
         setAuthor(response.data);
         setLoading(false);
       })
       .catch((error) => {
         console.log(error);
-        setLoading(false);
+        setLoading(false); 
       });
   }, [authorId]);
 
@@ -60,10 +60,10 @@ const Author = () => {
                         <i className="fa fa-check"></i>
                         <div className="profile_name">
                           <h4>
-                            Monica Lucas
-                            <span className="profile_username">@monicaaaa</span>
+                            {author?.authorName}
+                            <span className="profile_username">@{author?.tag}</span>
                             <span id="wallet" className="profile_wallet">
-                              UDHUHWudhwd78wdt7edb32uidbwyuidhg7wUHIFUHWewiqdj87dy7
+                              {author?.address}
                             </span>  
                             <button id="btn_copy" title="Copy Text">
                               Copy
@@ -76,7 +76,7 @@ const Author = () => {
                   </div>
                   <div className="profile_follow de-flex">
                     <div className="de-flex-col">
-                      <div className="profile_follower">573 followers</div>
+                      <div className="profile_follower">{author?.followers} followers</div>
                       <Link to="#" className="btn-main">
                         Follow
                       </Link>
@@ -87,7 +87,7 @@ const Author = () => {
 
               <div className="col-md-12">
                 <div className="de_tab tab_simple">
-                  <AuthorItems />
+                  <AuthorItems nftData={author?.nftCollection} authorId={authorId} authorImage={author?.authorImage} />
                 </div>
               </div>
             </div>
