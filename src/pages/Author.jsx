@@ -9,18 +9,22 @@ import axios from "axios";
 import Skeleton from "../components/UI/Skeleton";
 
 const Author = () => {
-
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followers, setFollowers] = useState(0);
   const [author, setAuthor] = useState(null);
   const [loading, setLoading] = useState(true);
   const { authorId }  = useParams();
 
   useEffect(() => {
-    window.scrollTo(0, 0); 
+    window.scrollTo(0, 0);
+    setLoading(true);
 
     axios
       .get(`https://us-central1-nft-cloud-functions.cloudfunctions.net/authors?author=${authorId}`)
       .then((response) => {
         setAuthor(response.data);
+        setFollowers(response.data.followers);
+        setIsFollowing(false);
         setLoading(false);
       })
       .catch((error) => {
@@ -29,6 +33,18 @@ const Author = () => {
       });
   }, [authorId]);
 
+  const handleFollowToggle = (e) => {
+    e.preventDefault();
+  
+    if(isFollowing){
+      setFollowers((prev)=> prev - 1);
+      setIsFollowing(false);
+    }else{
+      setFollowers((prev)=> prev + 1);
+      setIsFollowing(true);
+    }
+  }
+    
   if(!author && !loading){
     return <div className="text-center mt-90">Author not found</div>; 
   }
@@ -76,9 +92,9 @@ const Author = () => {
                   </div>
                   <div className="profile_follow de-flex">
                     <div className="de-flex-col">
-                      <div className="profile_follower">{author?.followers} followers</div>
-                      <Link to="#" className="btn-main">
-                        Follow
+                      <div className="profile_follower">{followers} followers</div>
+                      <Link to="#" className="btn-main" onClick={handleFollowToggle}>
+                        {isFollowing ? "Unfollow" : "Follow"}
                       </Link>
                     </div>
                   </div>
