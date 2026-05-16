@@ -66,6 +66,7 @@ const Author = () => {
               <div className="col-md-12">
                 <div className="d_profile de-flex">
                   <div className="de-flex-col">
+                    
                     <div className="profile_avatar">
                       {loading ? (
                       <Skeleton width={100} height={100} borderRadius={50} />
@@ -73,28 +74,48 @@ const Author = () => {
                         <>
                         <img src={author?.authorImage} alt="" />
                         <i className="fa fa-check"></i>
+                        </>
+                      )}
                         <div className="profile_name">
                           <h4>
-                            {author?.authorName}
-                            <span className="profile_username">@{author?.tag}</span>
-                            <span id="wallet" className="profile_wallet">
-                              {author?.address}
-                            </span>  
+                          {loading ? (
+                            <>
+                              <Skeleton width={200} height={24} borderRadius={4} />
+                              <span className="profile_username">
+                                <Skeleton width={100} height={16} borderRadius={4} />
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              {author?.authorName}
+                              <span className="profile_username">@{author?.tag}</span>
+                            </>
+                          )}
+                          <span id="wallet" className="profile_wallet">
+                            {loading ? <Skeleton width={180} height={16} borderRadius={4} /> : author?.address}
+                          </span>  
+                          
+                          {!loading && (
                             <button id="btn_copy" title="Copy Text">
                               Copy
                             </button>
-                          </h4>
+                          )}
+                        </h4>
                         </div>
-                        </>
-                      )}
                     </div>
                   </div>
                   <div className="profile_follow de-flex">
                     <div className="de-flex-col">
-                      <div className="profile_follower">{followers} followers</div>
-                      <Link to="#" className="btn-main" onClick={handleFollowToggle}>
-                        {isFollowing ? "Unfollow" : "Follow"}
-                      </Link>
+                      <div className="profile_follower">
+                        {loading ? <Skeleton width={100} height={20} borderRadius={4} /> : `${followers} followers`}
+                      </div>
+                      {loading ? (
+                        <Skeleton width={110} height={40} borderRadius={6} />
+                      ) : (
+                        <Link to="#" className="btn-main" onClick={handleFollowToggle}>
+                          {isFollowing ? "Unfollow" : "Follow"}
+                        </Link>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -102,7 +123,12 @@ const Author = () => {
 
               <div className="col-md-12">
                 <div className="de_tab tab_simple">
-                  <AuthorItems nftData={author?.nftCollection} authorId={authorId} authorImage={author?.authorImage} />
+                  <AuthorItems 
+                  nftData={author?.nftCollection} 
+                  authorId={authorId}
+                  authorImage={author?.authorImage}
+                  loading={loading}
+                   />
                 </div>
               </div>
             </div>
