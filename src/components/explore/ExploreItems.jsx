@@ -10,13 +10,22 @@ const ExploreItems = () => {
   const [loading, setLoading] = useState(true);
   const [visibleCount, setVisibleCount] = useState(8);
 
+  // Helper function to sanitize the data and fix the backend bug
+  const sanitizeData = (data) => {
+    return data.map((item) => {
+      if (item.id === 16 && item.authorId === 1) {
+        return { ...item, authorId: 83937449 }; // Patches the duplicate authorImage/incorrect authorId bug
+      }
+      return item;
+    });
+  };
 
   useEffect(() => { 
     
     axios
       .get("https://us-central1-nft-cloud-functions.cloudfunctions.net/explore")
       .then((response) => {
-        setExploreItems(response.data);
+        setExploreItems(sanitizeData(response.data));
         setLoading(false);
         })
       .catch((error) => {
@@ -40,7 +49,7 @@ const ExploreItems = () => {
     axios
       .get(url)
       .then((response) => {
-        setExploreItems(response.data);
+        setExploreItems(sanitizeData(response.data));
         setVisibleCount(8);
         setLoading(false);
       })
@@ -71,7 +80,7 @@ const ExploreItems = () => {
         <>
           {exploreItems.slice(0, visibleCount).map((exploreItem, index) => (
             <NFTCard
-              key={exploreItem.id || index} 
+              key={exploreItem.id} 
               data={exploreItem} 
               className="col-lg-3 col-md-6 col-sm-6 col-sm-12" 
             />
