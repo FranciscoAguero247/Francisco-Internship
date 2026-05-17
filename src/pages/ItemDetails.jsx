@@ -48,7 +48,7 @@ const ItemDetails = () => {
               </div>
               <div className="col-md-6">
                 <div className="item_info">
-                  <h2>{loading ? <Skeleton width={300} height={40} /> : item.title}</h2>
+                  <h2>{loading ? <Skeleton width={300} height={40} /> : item?.title + " # " + item?.tag}</h2>
                   
                   <div className="item_info_counts">
                     {loading ? (
@@ -57,7 +57,7 @@ const ItemDetails = () => {
                     <>
                     <div className="item_info_views">
                       <i className="fa fa-eye"></i>
-                      100
+                      {item?.views}
                     </div>
                     <div className="item_info_like">
                       <i className="fa fa-heart"></i>
@@ -70,11 +70,7 @@ const ItemDetails = () => {
                     <Skeleton width={100} height={20} />
                   ) : (
                     <>
-                      <p>
-                    doloremque laudantium, totam rem aperiam, eaque ipsa quae ab
-                    illo inventore veritatis et quasi architecto beatae vitae
-                    dicta sunt explicabo.
-                  </p>
+                      <p>{item?.description}</p>
                     </>
                   )}
                   <div className="d-flex flex-row">
@@ -85,8 +81,8 @@ const ItemDetails = () => {
                           {loading ? (
                             <Skeleton width={50} height={50} borderRadius={50} />
                           ) : (
-                            <Link to={`/author/${item?.authorId}`}>
-                            <img className="lazy" src={item?.authorImage} alt="" />
+                            <Link to={`/author/${item?.ownerId}`}>
+                            <img className="lazy" src={item?.ownerImage} alt="" />
                             <i className="fa fa-check"></i>
                           </Link>
                           )}
@@ -96,7 +92,7 @@ const ItemDetails = () => {
                         ) : (
                           <>
                             <div className="author_list_info">
-                              <Link to="/author">Monica Lucas</Link>
+                              <Link to={`/author/${item?.ownerId}`}>{item?.ownerName}</Link>
                             </div>
                           </>
                         )}                      
@@ -113,8 +109,8 @@ const ItemDetails = () => {
                             <Skeleton width={50} height={50} borderRadius={50} />
                           ) : (
                             <>
-                              <Link to="/author">
-                                <img className="lazy" src={item?.authorImage} alt="" />
+                              <Link to={`/author/${item?.creatorId}`}>
+                                <img className="lazy" src={item?.creatorImage} alt="" />
                                 <i className="fa fa-check"></i>
                               </Link>  
                             </>
@@ -125,7 +121,7 @@ const ItemDetails = () => {
                             <Skeleton width={100} height={20} />
                           ) : (
                             <> 
-                              <Link to="/author">Monica Lucas</Link>  
+                              <Link to={`/author/${item?.creatorId}`}>{item?.creatorName}</Link>  
                             </>
                             )}
                         </div>
