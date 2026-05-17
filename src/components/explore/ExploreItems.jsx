@@ -10,11 +10,11 @@ const ExploreItems = () => {
   const [loading, setLoading] = useState(true);
   const [visibleCount, setVisibleCount] = useState(8);
 
-  // Helper function to sanitize the data and fix the backend bug
+  
   const sanitizeData = (data) => {
     return data.map((item) => {
       if (item.id === 16 && item.authorId === 1) {
-        return { ...item, authorId: 83937449 }; // Patches the duplicate authorImage/incorrect authorId bug
+        return { ...item, authorId: 83937449 }; 
       }
       return item;
     });
