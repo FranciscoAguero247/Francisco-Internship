@@ -11,6 +11,7 @@ const ItemDetails = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    setLoading(true);
     
     axios 
       .get(`https://us-central1-nft-cloud-functions.cloudfunctions.net/itemDetails?nftId=${nftId}`)
@@ -37,7 +38,7 @@ const ItemDetails = () => {
             <div className="row">
               <div className="col-md-6 text-center">
                 {loading ? (
-                  <Skeleton width={100} height={100} borderRadius={8} className="aspect-sqaure" />
+                  <Skeleton width="100%" height="100%" borderRadius={8} className="aspect-sqaure" />
                 ) : (
                     <img
                       src={item?.nftImage}
@@ -67,7 +68,7 @@ const ItemDetails = () => {
                     )}
                   </div>
                   {loading ? (
-                    <Skeleton width={100} height={20} />
+                    <Skeleton width="100%" height={20} className="mt-2" />
                   ) : (
                     <>
                       <p>{item?.description}</p>
@@ -88,7 +89,7 @@ const ItemDetails = () => {
                           )}
                         </div>
                         {loading ? (
-                          <Skeleton width={100} height={20} />
+                          <Skeleton width={120} height={30} />
                         ) : (
                           <>
                             <div className="author_list_info">
@@ -118,7 +119,7 @@ const ItemDetails = () => {
                         </div>
                         <div className="author_list_info">
                           {loading ? (
-                            <Skeleton width={100} height={20} />
+                            <Skeleton width={120} height={30} />
                           ) : (
                             <> 
                               <Link to={`/author/${item?.creatorId}`}>{item?.creatorName}</Link>  
