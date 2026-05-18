@@ -11,6 +11,7 @@ const ItemDetails = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    setLoading(true);
     
     axios 
       .get(`https://us-central1-nft-cloud-functions.cloudfunctions.net/itemDetails?nftId=${nftId}`)
@@ -37,7 +38,7 @@ const ItemDetails = () => {
             <div className="row">
               <div className="col-md-6 text-center">
                 {loading ? (
-                  <Skeleton width={100} height={100} borderRadius={8} className="aspect-sqaure" />
+                  <Skeleton width="100%" height="100%" borderRadius={8} className="aspect-sqaure" />
                 ) : (
                     <img
                       src={item?.nftImage}
@@ -48,7 +49,7 @@ const ItemDetails = () => {
               </div>
               <div className="col-md-6">
                 <div className="item_info">
-                  <h2>{loading ? <Skeleton width={300} height={40} /> : item.title}</h2>
+                  <h2>{loading ? <Skeleton width={300} height={40} /> : item?.title + " # " + item?.tag}</h2>
                   
                   <div className="item_info_counts">
                     {loading ? (
@@ -57,7 +58,7 @@ const ItemDetails = () => {
                     <>
                     <div className="item_info_views">
                       <i className="fa fa-eye"></i>
-                      100
+                      {item?.views}
                     </div>
                     <div className="item_info_like">
                       <i className="fa fa-heart"></i>
@@ -67,14 +68,10 @@ const ItemDetails = () => {
                     )}
                   </div>
                   {loading ? (
-                    <Skeleton width={100} height={20} />
+                    <Skeleton width="100%" height={20} className="mt-2" />
                   ) : (
                     <>
-                      <p>
-                    doloremque laudantium, totam rem aperiam, eaque ipsa quae ab
-                    illo inventore veritatis et quasi architecto beatae vitae
-                    dicta sunt explicabo.
-                  </p>
+                      <p>{item?.description}</p>
                     </>
                   )}
                   <div className="d-flex flex-row">
@@ -85,18 +82,18 @@ const ItemDetails = () => {
                           {loading ? (
                             <Skeleton width={50} height={50} borderRadius={50} />
                           ) : (
-                            <Link to={`/author/${item?.authorId}`}>
-                            <img className="lazy" src={item?.authorImage} alt="" />
+                            <Link to={`/author/${item?.ownerId}`}>
+                            <img className="lazy" src={item?.ownerImage} alt="" />
                             <i className="fa fa-check"></i>
                           </Link>
                           )}
                         </div>
                         {loading ? (
-                          <Skeleton width={100} height={20} />
+                          <Skeleton width={120} height={30} />
                         ) : (
                           <>
                             <div className="author_list_info">
-                              <Link to="/author">Monica Lucas</Link>
+                              <Link to={`/author/${item?.ownerId}`}>{item?.ownerName}</Link>
                             </div>
                           </>
                         )}                      
@@ -113,8 +110,8 @@ const ItemDetails = () => {
                             <Skeleton width={50} height={50} borderRadius={50} />
                           ) : (
                             <>
-                              <Link to="/author">
-                                <img className="lazy" src={item?.authorImage} alt="" />
+                              <Link to={`/author/${item?.creatorId}`}>
+                                <img className="lazy" src={item?.creatorImage} alt="" />
                                 <i className="fa fa-check"></i>
                               </Link>  
                             </>
@@ -122,10 +119,10 @@ const ItemDetails = () => {
                         </div>
                         <div className="author_list_info">
                           {loading ? (
-                            <Skeleton width={100} height={20} />
+                            <Skeleton width={120} height={30} />
                           ) : (
                             <> 
-                              <Link to="/author">Monica Lucas</Link>  
+                              <Link to={`/author/${item?.creatorId}`}>{item?.creatorName}</Link>  
                             </>
                             )}
                         </div>
